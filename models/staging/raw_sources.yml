@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: erp_raw
+    database: MANUFACTURING_ANALYTICS
+    schema: RAW_ERP
+    tables:
+      - name: customers
+      - name: products
+      - name: sales_orders
+      - name: sales_order_lines

@@ -1,0 +1,9 @@
+# dbt build artifacts
+target/
+logs/
+dbt_packages/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log

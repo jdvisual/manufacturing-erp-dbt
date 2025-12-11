@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension built from stg_customers"
+    columns:
+      - name: customer_key
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_product
+    description: "Product dimension built from stg_products"
+    columns:
+      - name: product_key
+        tests:
+          - not_null
+          - unique
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_calendar
+    description: "Calendar dimension with one row per date"
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+          - unique
+      - name: date
+        tests:
+          - not_null
+
+  - name: fct_sales_order_line
+    description: "Sales order line fact at the line-item grain"
+    columns:
+      - name: sales_order_line_key
+        tests:
+          - not_null
+          - unique
+      - name: customer_key
+        tests:
+          - not_null
+      - name: product_key
+        tests:
+          - not_null
+      - name: order_date_key
+        tests:
+          - not_null

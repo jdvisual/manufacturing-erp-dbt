@@ -1,0 +1,45 @@
+﻿name: manufacturing_erp_dbt
+version: 1.0.0
+config-version: 2
+
+profile: manufacturing_erp
+
+model-paths:
+  - models
+macro-paths:
+  - macros
+seed-paths:
+  - seeds
+snapshot-paths:
+  - snapshots
+test-paths:
+  - tests
+
+models:
+  manufacturing_erp_dbt:
+    +materialized: view
+
+    staging:
+      +schema: CORE
+      +tags:
+        - staging
+
+    core:
+      +schema: CORE
+      +materialized: table
+      +tags:
+        - core
+
+    marts:
+      +schema: DM
+      +materialized: view
+      +tags:
+        - mart
+
+seeds:
+  manufacturing_erp_dbt:
+    +schema: RAW_ERP
+
+snapshots:
+  manufacturing_erp_dbt:
+    +target_schema: CORE

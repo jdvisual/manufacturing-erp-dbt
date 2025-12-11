@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleansed ERP customers from RAW_ERP.CUSTOMERS"
+    columns:
+      - name: customer_id
+        description: "Business key for the customer"
+        tests:
+          - not_null
+          - unique
+      - name: customer_segment
+        description: "Customer segment classification"
+        tests:
+          - accepted_values:
+              values: ['SMALL', 'MID', 'ENTERPRISE']
+
+  - name: stg_products
+    description: "Cleansed ERP products from RAW_ERP.PRODUCTS"
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_sales_orders
+    description: "Cleansed ERP sales orders from RAW_ERP.SALES_ORDERS"
+    columns:
+      - name: sales_order_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_sales_order_lines
+    description: "Cleansed ERP sales order lines from RAW_ERP.SALES_ORDER_LINES"
+    columns:
+      - name: sales_order_line_id
+        tests:
+          - not_null
+          - unique
+      - name: sales_order_id
+        tests:
+          - not_null
