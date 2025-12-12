@@ -4,7 +4,7 @@
 ) }}
 
 with source as (
-   from {{ source('raw_erp', 'CUSTOMERS_ERP') }}
+select *    from {{ source('raw_erp', 'CUSTOMERS_ERP') }}
 ),
 
 renamed as (
