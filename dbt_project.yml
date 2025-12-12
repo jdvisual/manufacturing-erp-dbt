@@ -35,11 +35,10 @@ models:
       +materialized: view
       +tags:
         - mart
-
 seeds:
   manufacturing_erp_dbt:
-    +schema: RAW_ERP
+    +schema: SEEDS
 
 snapshots:
   manufacturing_erp_dbt:
-    +target_schema: CORE
+    +schema: SNAPSHOTS

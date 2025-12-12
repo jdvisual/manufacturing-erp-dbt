@@ -4,7 +4,8 @@
 ) }}
 
 with source as (
-    select * from {{ source('erp_raw', 'sales_orders') }}
+    select * from source('raw_erp', 'SALES_ORDERS')
+
 ),
 
 renamed as (

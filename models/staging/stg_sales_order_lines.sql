@@ -1,25 +1,19 @@
 {{ config(
-    alias='STG_SALES_ORDER_LINE',
-    materialized='view'
+    materialized = 'view'
 ) }}
 
-with source as (
-    select * from {{ source('erp_raw', 'sales_order_lines') }}
-),
+with source_data as (
 
-renamed as (
     select
-        {{ dbt_utils.generate_surrogate_key(['source_system', 'sales_order_line_id']) }} as sales_order_line_key,
-        sales_order_line_id,
-        sales_order_id,
+        order_id,
+        order_line_id,
         product_id,
-        quantity_ordered,
+        quantity,
         unit_price,
-        created_at,
-        updated_at,
-        source_system
-    from source
-    where sales_order_line_id is not null
+        quantity * unit_price as line_amount
+    from {{ source('raw_erp', 'SALES_ORDER_LINES') }}
+
 )
 
-select * from renamed
+select *
+from source_data

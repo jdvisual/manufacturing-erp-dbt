@@ -1,11 +1,84 @@
-version: 2
+﻿version: 2
 
 sources:
-  - name: erp_raw
+  - name: raw_erp
     database: MANUFACTURING_ANALYTICS
     schema: RAW_ERP
+
     tables:
-      - name: customers
-      - name: products
-      - name: sales_orders
-      - name: sales_order_lines
+      - name: CUSTOMERS_ERP
+        loaded_at_field: ingest_ts
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+
+      - name: CUSTOMERS_CRM
+        loaded_at_field: ingest_ts
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+
+      - name: PRODUCTS
+        loaded_at_field: ingest_ts
+        columns:
+          - name: product_id
+            tests:
+              - not_null
+              - unique
+          - name: list_price
+            tests:
+              - dbt_utils.expression_is_true:
+                  column_name: list_price
+                  expression: ">= 0"
+
+      - name: SALES_ORDERS
+        loaded_at_field: ingest_ts
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            tests:
+              - not_null
+          - name: order_date
+            tests:
+              - dbt_utils.expression_is_true:
+                  column_name: order_date
+                  expression: "<= current_date()"
+          - name: order_status
+            tests:
+              - accepted_values:
+                  values: ['OPEN', 'SHIPPED', 'CLOSED', 'CANCELLED']
+
+      - name: SALES_ORDER_LINES
+        loaded_at_field: ingest_ts
+        columns:
+          - name: order_line_id
+            tests:
+              - not_null
+              - unique
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw_erp', 'SALES_ORDERS')
+                  field: order_id
+          - name: product_id
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw_erp', 'PRODUCTS')
+                  field: product_id
+          - name: quantity
+            tests:
+              - dbt_utils.expression_is_true:
+                  column_name: quantity
+                  expression: "> 0"
+          - name: unit_price
+            tests:
+              - dbt_utils.expression_is_true:
+                  column_name: unit_price
+                  expression: ">= 0"
