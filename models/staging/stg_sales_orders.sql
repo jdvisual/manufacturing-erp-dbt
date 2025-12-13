@@ -1,27 +1,30 @@
-{{ config(
-    alias='STG_SALES_ORDER',
-    materialized='view'
-) }}
+ {{ config(alias='STG_SALES_ORDERS', materialized='view') }}
 
 with source as (
-    select * from source('raw_erp', 'SALES_ORDERS')
+
+    select * from {{ source('raw_erp', 'SALES_ORDERS') }}
 
 ),
 
 renamed as (
+
     select
-        {{ dbt_utils.generate_surrogate_key(['source_system', 'sales_order_id']) }} as sales_order_key,
-        sales_order_id,
-        customer_id,
+        {{ dbt_utils.generate_surrogate_key(["source_system", "order_id"]) }} as sales_order_key,
+
+        upper(trim(order_id)) as sales_order_id,
+        upper(trim(customer_id)) as customer_id,
+
+        order_date,
         order_status,
-        order_type,
-        order_date ,
-        requested_ship_date ,
-        created_at,
-        updated_at,
+
+        /* RAW does not have CREATED_AT / UPDATED_AT right now */
+        cast(null as timestamp_ntz) as created_at,
+        cast(null as timestamp_ntz) as updated_at,
+
         source_system
     from source
-    where sales_order_id is not null
+    where order_id is not null
+
 )
 
 select * from renamed
